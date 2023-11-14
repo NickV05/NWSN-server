@@ -9,6 +9,7 @@ var cors = require('cors')
 
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
+var homeRouter = require('./routes/home');
 
 
 var app = express();
@@ -31,6 +32,7 @@ app.use(
 
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/home', homeRouter);
 
 
 mongoose

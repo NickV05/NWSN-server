@@ -1,18 +1,14 @@
 var express = require("express");
 var router = express.Router();
-
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const isAuthenticated = require("../middleware/isAuthenticated");
-
 const User = require("../models/User");
-
 const saltRounds = 10;
 
 
 router.post("/signup", (req, res, next) => {
-  const { email, password, fullName, location, username  } = req.body;
+  const { email, password, fullName} = req.body;
 
   if (email === "" || password === "") {
     res.status(400).json({ message: "Provide email, password and name" });
@@ -43,12 +39,12 @@ router.post("/signup", (req, res, next) => {
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
 
-      User.create({ email, password: hashedPassword, fullName, location, username, image:"https://res.cloudinary.com/dyto7dlgt/image/upload/v1691526692/project3/avatar_h1b0st.jpg" })
+      User.create({ email, password: hashedPassword, fullName, image:"https://res.cloudinary.com/dyto7dlgt/image/upload/v1691526692/project3/avatar_h1b0st.jpg" })
         .then((createdUser) => {
 
-          const { email, _id, fullName, location, username, conversations, listedItems, image } = createdUser;
+          const { email, _id, fullName,  image } = createdUser;
 
-          const payload = { email, _id, fullName, location, username, conversations, listedItems, image };
+          const payload = { email, _id, fullName, image };
 
           const authToken = jwt.sign(payload, process.env.SECRET, {
             algorithm: "HS256",
@@ -88,9 +84,9 @@ router.post("/login", (req, res, next) => {
 
       if (passwordCorrect) {
 
-        const { email, _id, fullName, location, username, image, listedItems, conversations} = foundUser;
+        const { email, _id, fullName, image} = foundUser;
 
-        const payload = { email, _id, fullName, location, username, image, listedItems, conversations };
+        const payload = { email, _id, fullName, image };
 
         const authToken = jwt.sign(payload, process.env.SECRET, {
           algorithm: "HS256",
