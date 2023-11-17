@@ -6,9 +6,8 @@ const isAuthenticated = require("../middleware/isAuthenticated");
 const User = require("../models/User");
 const saltRounds = 10;
 
-
 router.post("/signup", (req, res, next) => {
-  const { email, password, fullName} = req.body;
+  const { email, password, fullName } = req.body;
 
   if (email === "" || password === "") {
     res.status(400).json({ message: "Provide email, password and name" });
@@ -23,14 +22,17 @@ router.post("/signup", (req, res, next) => {
 
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
   if (!passwordRegex.test(password)) {
-    res.status(400).json({ message: 'Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.' });
+    res
+      .status(400)
+      .json({
+        message:
+          "Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.",
+      });
     return;
   }
 
-
   User.findOne({ email })
     .then((foundUser) => {
-
       if (foundUser) {
         res.status(400).json({ message: "User already exists." });
         return;
@@ -39,10 +41,15 @@ router.post("/signup", (req, res, next) => {
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
 
-      User.create({ email, password: hashedPassword, fullName, image:"https://res.cloudinary.com/dyto7dlgt/image/upload/v1691526692/project3/avatar_h1b0st.jpg" })
+      User.create({
+        email,
+        password: hashedPassword,
+        fullName,
+        image:
+          "https://res.cloudinary.com/dyto7dlgt/image/upload/v1691526692/project3/avatar_h1b0st.jpg",
+      })
         .then((createdUser) => {
-
-          const { email, _id, fullName,  image } = createdUser;
+          const { email, _id, fullName, image } = createdUser;
 
           const payload = { email, _id, fullName, image };
 
@@ -50,7 +57,7 @@ router.post("/signup", (req, res, next) => {
             algorithm: "HS256",
             expiresIn: "6h",
           });
-  
+
           res.status(200).json({ authToken });
         })
         .catch((err) => {
@@ -75,7 +82,6 @@ router.post("/login", (req, res, next) => {
   User.findOne({ email })
     .then((foundUser) => {
       if (!foundUser) {
-
         res.status(401).json({ message: "User not found." });
         return;
       }
@@ -83,8 +89,7 @@ router.post("/login", (req, res, next) => {
       const passwordCorrect = bcrypt.compareSync(password, foundUser.password);
 
       if (passwordCorrect) {
-
-        const { email, _id, fullName, image} = foundUser;
+        const { email, _id, fullName, image } = foundUser;
 
         const payload = { email, _id, fullName, image };
 
@@ -102,7 +107,6 @@ router.post("/login", (req, res, next) => {
 });
 
 router.get("/verify", isAuthenticated, (req, res, next) => {
-
   console.log("req.user", req.user);
 
   res.status(200).json(req.user);
