@@ -45,13 +45,14 @@ router.post("/signup", (req, res, next) => {
         email,
         password: hashedPassword,
         fullName,
+        member:false,
         image:
           "https://res.cloudinary.com/dyto7dlgt/image/upload/v1691526692/project3/avatar_h1b0st.jpg",
       })
         .then((createdUser) => {
-          const { email, _id, fullName, image } = createdUser;
+          const { email, _id, fullName, image, member } = createdUser;
 
-          const payload = { email, _id, fullName, image };
+          const payload = { email, _id, fullName, image, member };
 
           const authToken = jwt.sign(payload, process.env.SECRET, {
             algorithm: "HS256",
@@ -89,9 +90,9 @@ router.post("/login", (req, res, next) => {
       const passwordCorrect = bcrypt.compareSync(password, foundUser.password);
 
       if (passwordCorrect) {
-        const { email, _id, fullName, image } = foundUser;
+        const { email, _id, fullName, image, member } = foundUser;
 
-        const payload = { email, _id, fullName, image };
+        const payload = { email, _id, fullName, image, member };
 
         const authToken = jwt.sign(payload, process.env.SECRET, {
           algorithm: "HS256",
