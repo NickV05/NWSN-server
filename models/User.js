@@ -17,6 +17,10 @@ const userSchema = new Schema(
     member:{
         type:Boolean,
         default:false
+    },
+    admin:{
+        type:Boolean,
+        default:false
     }
     },
     {
