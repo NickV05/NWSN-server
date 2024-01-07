@@ -140,5 +140,21 @@ router.post("/partnerForm", (req, res, next) => {
         res.json(forms)})
     })
 
+    router.post("/review",(req,res,next) => {
+      const id = Object.keys(req.body)[0];
+      console.log("req.body", req.body)
+      console.log("id", id)
+      Form.findByIdAndUpdate(
+        id,
+        {
+          pending:false,
+        }
+      )
+      .then((updatedForm) => {
+        console.log("Updated Form", updatedForm)
+        res.status(200)
+      })
+    })
+
 
 module.exports = router;
