@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const Sponsor = require("../models/Sponsor");
 const Email = require("../models/Email")
+const Partner = require("../models/Partner")
 
 router.get("/sponsors", (req, res, next) => {
   Sponsor.find().then((sponsors) => {
@@ -20,6 +21,26 @@ router.post("/add-sponsors", (req, res, next) => {
       res.status(500).json({ message: "Internal Server Error" });
     });
 });
+
+router.get("/partners", (req, res, next) => {
+  Partner.find().then((sponsors) => {
+    res.json(sponsors);
+  });
+});
+
+router.post("/add-partners", (req, res, next) => {
+  const image = req.body.image;
+  Partner.create({ image })
+    .then((createdPartner) => {
+      res.json(createdPartner);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Internal Server Error" });
+    });
+});
+
+
 
 router.post("/subscribe", (req, res, next) => {
   console.log("REQ BODY ===>",req.body)
