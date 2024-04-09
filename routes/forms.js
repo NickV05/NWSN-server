@@ -1,9 +1,33 @@
 var express = require("express");
 var router = express.Router();
 const Form = require('../models/Forms')
+const nodemailer = require("nodemailer");
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); 
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
 
-router.post("/memberForm", (req, res, next) => {
+const upload = multer({ storage: storage });
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: "info@thenwsn.org",
+    pass: "aearbttnkredizgj"
+  }
+});
+
+
+
+router.post("/memberForm", upload.array('files'), (req, res) => {
 console.log("Req.body ===>", req.body)
+ console.log("Req.files ===>",req.files);
+
 
 Form.create({
   type:"MemberForm",
@@ -132,6 +156,28 @@ router.post("/partnerForm", (req, res, next) => {
       console.log(err);
       res.status(500).json({ message: "Internal Server Error" });
     });
+    })
+
+    router.post("/contactForm", (req, res) => {
+      console.log("RECEIVED BODY ===>", req.body);
+      const { name, email, message } = req.body;
+    
+      const mailOptions = {
+        from: `${name}, ${email}`,
+        to: "nikita.valovyy@gmail.com",
+        subject: "NWSN",
+        text: `From ${name}, ${email}. ${message}`
+     };
+     
+     transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+           console.log(error);
+        }else{
+           console.log("Email sent: " + info.response);
+        }
+     });
+    
+      res.status(200).json({ message: "Message received" });
     })
 
     router.get("/getForms",(req,res,next)=>{

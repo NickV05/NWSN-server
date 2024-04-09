@@ -43,7 +43,6 @@ router.post("/add-partners", (req, res, next) => {
 
 
 router.post("/subscribe", (req, res, next) => {
-  console.log("REQ BODY ===>",req.body)
   const email =req.body.email;
 
  Email.findOne({ email })
@@ -55,7 +54,6 @@ router.post("/subscribe", (req, res, next) => {
 
   Email.create({email})
   .then((createdEmail) => {
-    console.log("Created Email ==>", createdEmail)
     res.json(createdEmail)
 
   })
