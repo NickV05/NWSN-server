@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: "info@thenwsn.org",
-    pass: "aearbttnkredizgj"
+    pass: "eeqparlvrauaczgp"
   }
 });
 
@@ -164,7 +164,7 @@ router.post("/partnerForm", (req, res, next) => {
     
       const mailOptions = {
         from: `${name}, ${email}`,
-        to: "nikita.valovyy@gmail.com",
+        to: "info@thenwsn.org",
         subject: "NWSN",
         text: `From ${name}, ${email}. ${message}`
      };
